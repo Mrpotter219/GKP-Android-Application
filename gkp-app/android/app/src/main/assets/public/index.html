@@ -1,0 +1,837 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#0d0d10">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<title>Gaurav Kumar Photography</title>
+<style>
+:root{--bg:#0d0d10;--s1:#151519;--s2:#1c1c22;--s3:#272730;--line:#2d2d37;--tx:#f3efe7;--mu:#9a968e;--gold:#d6aa55;--gold2:#f0cf85;--green:#3fb868;--orange:#f2a233;--red:#e5484d;--blue:#5aa3f0;--violet:#a78bfa;
+--c-new:var(--green);--c-fin:var(--orange);--c-rej:var(--red);--st:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--tx);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-text-size-adjust:100%}
+.serif{font-family:Georgia,"Times New Roman",serif}
+button,input,select,textarea{font:inherit;color:inherit}
+h1,h2,h3,p{margin:0}
+.muted{color:var(--mu)}.sm{font-size:12.5px}.xs{font-size:11px}.b{font-weight:600}.gold{color:var(--gold)}
+[hidden]{display:none!important}
+
+/* ---------- splash ---------- */
+#splash{position:fixed;inset:0;z-index:100;background:radial-gradient(ellipse at 50% 38%,#1b1a1f 0%,#0d0d10 70%);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .6s}
+#splash.out{opacity:0;pointer-events:none}
+.iris{width:min(62vw,250px);height:auto;filter:drop-shadow(0 0 28px rgba(214,170,85,.25))}
+.iris .ring{fill:none;stroke:var(--gold);stroke-width:2.4;stroke-dasharray:580;stroke-dashoffset:580;animation:draw 1.1s .15s ease-out forwards}
+.iris .ring2{fill:none;stroke:#3a3320;stroke-width:1;opacity:0;animation:fadein .6s .9s forwards}
+.iris .bl{fill:url(#gg);stroke:#0d0d10;stroke-width:1.6;animation:bl 1s 1.1s cubic-bezier(.6,0,.3,1) forwards}
+.iris .blades{animation:spin 1s 1.1s cubic-bezier(.6,0,.3,1) forwards}
+.iris .core{opacity:0;animation:fadein .7s 1.2s forwards}
+.iris .hl{opacity:0;animation:fadein .5s 1.9s forwards}
+.s-name{margin-top:26px;font-size:clamp(28px,8.5vw,40px);letter-spacing:.04em;display:flex;gap:.35em}
+.s-name span{opacity:0;transform:translateY(14px);animation:up .7s forwards}
+.s-name span:nth-child(1){animation-delay:1.7s}.s-name span:nth-child(2){animation-delay:1.9s}
+.s-sub{margin-top:8px;font-size:13px;color:var(--gold);letter-spacing:.2em;opacity:0;animation:track 1.1s 2.2s ease-out forwards}
+.s-tag{margin-top:16px;font-size:13px;color:var(--mu);font-style:italic;opacity:0;animation:fadein .8s 2.7s forwards}
+.s-skip{position:absolute;bottom:calc(26px + var(--sb));font-size:11px;color:#55524c;letter-spacing:.12em;opacity:0;animation:fadein .6s 1.5s forwards}
+.flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;animation:flash .5s 3.05s ease-out}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes fadein{to{opacity:1}}
+@keyframes up{to{opacity:1;transform:none}}
+@keyframes track{from{opacity:0;letter-spacing:.02em}to{opacity:1;letter-spacing:.42em}}
+@keyframes bl{to{transform:translateX(74px);opacity:.0}}
+@keyframes spin{to{transform:rotate(-24deg)}}
+@keyframes flash{0%{opacity:0}25%{opacity:.85}100%{opacity:0}}
+
+/* ---------- shell ---------- */
+#shell{min-height:100vh;padding-top:calc(58px + var(--st));padding-bottom:calc(96px + var(--sb));animation:fadein .5s both}
+#top{position:fixed;top:0;left:0;right:0;z-index:30;height:calc(58px + var(--st));padding:var(--st) 10px 0 4px;display:flex;align-items:center;gap:2px;background:rgba(13,13,16,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+#top h2{font-size:18px;font-weight:600;letter-spacing:.01em;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ib{width:46px;height:46px;border:0;background:none;display:grid;place-items:center;border-radius:50%;cursor:pointer;color:var(--tx)}
+.ib:active{background:var(--s3)}
+svg.i{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+svg.i.s{width:18px;height:18px}
+#view{padding:14px 14px 0;max-width:720px;margin:0 auto}
+#fab{position:fixed;right:18px;bottom:calc(22px + var(--sb));width:60px;height:60px;border-radius:50%;border:0;background:linear-gradient(145deg,var(--gold2),var(--gold));color:#1a1405;display:grid;place-items:center;box-shadow:0 8px 24px rgba(214,170,85,.35),0 2px 6px rgba(0,0,0,.5);z-index:25;cursor:pointer}
+#fab:active{transform:scale(.94)}#fab svg{width:28px;height:28px;stroke-width:2.4}
+
+/* drawer */
+#scrim{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:40;opacity:0;pointer-events:none;transition:opacity .25s}
+#drawer{position:fixed;top:0;bottom:0;left:0;width:min(82vw,320px);background:var(--s1);z-index:41;transform:translateX(-102%);transition:transform .28s cubic-bezier(.3,.8,.3,1);padding:calc(var(--st) + 22px) 12px 18px;display:flex;flex-direction:column;border-right:1px solid var(--line)}
+body.dopen #scrim{opacity:1;pointer-events:auto}body.dopen #drawer{transform:none}
+.brand{padding:4px 10px 20px;border-bottom:1px solid var(--line);margin-bottom:10px}
+.brand .mk{width:46px;height:46px;border-radius:14px;background:linear-gradient(145deg,var(--gold2),var(--gold));display:grid;place-items:center;color:#1a1405;margin-bottom:12px}
+.brand .mk svg{width:26px;height:26px}
+.brand h3{font-size:20px;line-height:1.15}
+.dl{display:flex;align-items:center;gap:14px;padding:13px 12px;border-radius:12px;border:0;background:none;width:100%;text-align:left;font-size:15.5px;cursor:pointer}
+.dl.on{background:var(--s3);color:var(--gold2)}.dl:active{background:var(--s3)}
+.dl .cnt{margin-left:auto;font-size:12px;background:var(--s3);padding:2px 9px;border-radius:99px;color:var(--mu)}
+
+/* ---------- common ---------- */
+.card{background:var(--s1);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:14px}
+.card h3{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--mu);font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.card h3 .r{margin-left:auto;letter-spacing:0;text-transform:none}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.row{display:flex;align-items:center;gap:10px}.sp{flex:1}.wrap{flex-wrap:wrap}
+.kv{display:flex;justify-content:space-between;gap:14px;padding:9px 0;border-bottom:1px dashed var(--line)}.kv:last-child{border:0}
+.kv span:first-child{color:var(--mu)}.kv span:last-child{text-align:right;font-weight:500;word-break:break-word}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 18px;border-radius:14px;border:1px solid var(--line);background:var(--s2);font-weight:600;cursor:pointer;min-height:46px}
+.btn:active{filter:brightness(1.25)}
+.btn.p{background:linear-gradient(145deg,var(--gold2),var(--gold));color:#1a1405;border:0}
+.btn.wa{background:#1fa855;color:#fff;border:0}
+.btn.g{background:rgba(63,184,104,.14);color:var(--green);border-color:rgba(63,184,104,.4)}
+.btn.d{background:rgba(229,72,77,.12);color:#ff7a7e;border-color:rgba(229,72,77,.4)}
+.btn.sm{padding:8px 12px;min-height:36px;font-size:13px;border-radius:11px}
+.btn.f{width:100%}
+.btns{display:grid;gap:10px}.btns.c2{grid-template-columns:1fr 1fr}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;letter-spacing:.04em;padding:3px 10px;border-radius:99px;background:color-mix(in srgb,var(--c) 18%,transparent);color:var(--c);border:1px solid color-mix(in srgb,var(--c) 45%,transparent);text-transform:uppercase}
+.st-new{--c:var(--c-new)}.st-fin{--c:var(--c-fin)}.st-rej{--c:var(--c-rej)}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:2px 0 12px;scrollbar-width:none}.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;padding:8px 14px;border-radius:99px;border:1px solid var(--line);background:var(--s1);font-size:13.5px;cursor:pointer;display:flex;gap:7px;align-items:center;white-space:nowrap}
+.chip.on{background:var(--s3);border-color:var(--gold);color:var(--gold2)}
+.chip .dot{width:9px;height:9px;border-radius:50%;background:var(--c,var(--mu))}
+.chip .n{opacity:.7;font-size:12px}
+.empty{text-align:center;padding:42px 20px;color:var(--mu)}.empty svg{width:42px;height:42px;opacity:.5;margin-bottom:8px}
+.bar{height:8px;border-radius:99px;background:var(--s3);overflow:hidden}.bar i{display:block;height:100%;border-radius:99px;background:var(--gold);transition:width .4s}
+.bar.ok i{background:var(--green)}
+.big{font-size:26px;font-weight:700;letter-spacing:-.01em}
+.neg{color:#ff7a7e}.pos{color:var(--green)}.warn{color:var(--orange)}
+
+/* hero + kpis */
+.hero{padding:6px 4px 18px}
+.hero h1{font-size:31px;line-height:1.08;margin:4px 0 4px}.hero h1 span{color:var(--gold)}
+.kpi{background:var(--s1);border:1px solid var(--line);border-radius:18px;padding:14px 14px 13px;cursor:pointer;position:relative;overflow:hidden}
+.kpi:active{background:var(--s2)}
+.kpi:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--c,var(--gold))}
+.kpi .n{font-size:30px;font-weight:700;line-height:1.1;margin-top:4px;color:var(--c,var(--tx))}
+.kpi .l{font-size:12.5px;color:var(--mu)}
+.fin-row{display:grid;grid-template-columns:1fr 1fr;gap:10px 16px}
+.fin-row .l{font-size:12px;color:var(--mu)}.fin-row .v{font-size:19px;font-weight:650}
+
+/* list items */
+.it{display:flex;gap:12px;align-items:center;background:var(--s1);border:1px solid var(--line);border-radius:16px;padding:13px 14px 13px 16px;margin-bottom:10px;cursor:pointer;position:relative;overflow:hidden}
+.it:active{background:var(--s2)}
+.it:before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--c,var(--line))}
+.it .t{font-weight:600;font-size:16px}.it .s{font-size:13px;color:var(--mu);margin-top:1px}
+.it .amt{font-weight:700;text-align:right}
+.mini{position:relative;width:46px;height:46px;flex:none}.mini span{position:absolute;inset:0;display:grid;place-items:center;font-size:11.5px;font-weight:700}
+.search{display:flex;align-items:center;gap:10px;background:var(--s1);border:1px solid var(--line);border-radius:14px;padding:0 14px;margin-bottom:12px}
+.search input{flex:1;background:none;border:0;outline:0;padding:13px 0;min-width:0}
+.search select{background:var(--s1);border:0;outline:0;color:var(--gold2);max-width:42%;padding:10px 0}
+.search select option{background:#1c1c22}
+
+/* forms */
+.fld{margin-bottom:14px}
+.fld label{display:block;font-size:12.5px;color:var(--mu);margin-bottom:6px}
+.fld label b{color:var(--red)}
+.in,.fld input,.fld select,.fld textarea{width:100%;background:var(--s2);border:1px solid var(--line);border-radius:13px;padding:13px 14px;outline:0}
+.fld select option{background:#1c1c22}
+.fld input:focus,.fld select:focus,.fld textarea:focus{border-color:var(--gold)}
+.fld textarea{min-height:92px;resize:vertical}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.svc{display:flex;flex-wrap:wrap;gap:8px}
+.svc .chip.on{background:rgba(214,170,85,.16)}
+.pre{position:relative}.pre span{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--mu)}.pre input{padding-left:44px}
+.qi{display:grid;grid-template-columns:1fr 112px 38px;gap:8px;margin-bottom:8px;align-items:start}
+.qi input{width:100%;background:var(--s2);border:1px solid var(--line);border-radius:12px;padding:12px;outline:0}
+.qi input:focus{border-color:var(--gold)}
+.qi button{height:46px;border:0;background:none;color:var(--mu);cursor:pointer}
+.tot{display:flex;justify-content:space-between;align-items:center;padding:12px 0 0;margin-top:6px;border-top:1px solid var(--line);font-size:18px;font-weight:700}
+
+/* tabs */
+.tabs{display:flex;background:var(--s1);border:1px solid var(--line);border-radius:14px;padding:4px;margin-bottom:14px;position:sticky;top:calc(62px + var(--st));z-index:10}
+.tabs button{flex:1;border:0;background:none;padding:10px 4px;border-radius:10px;font-weight:600;color:var(--mu);cursor:pointer}
+.tabs button.on{background:var(--s3);color:var(--gold2)}
+.seg{display:flex;gap:8px;margin-bottom:14px}.seg button{flex:1;padding:11px;border-radius:12px;border:1px solid var(--line);background:var(--s1);font-weight:600;color:var(--mu);cursor:pointer}
+.seg button.on.in{border-color:var(--green);color:var(--green);background:rgba(63,184,104,.1)}
+.seg button.on.out{border-color:var(--red);color:#ff7a7e;background:rgba(229,72,77,.1)}
+
+/* order head + ring */
+.ohead{display:flex;gap:14px;align-items:center;margin-bottom:14px}
+.ringwrap{display:flex;flex-direction:column;align-items:center;gap:14px}
+.ringbox{position:relative;width:224px;height:224px}
+.ringbox .mid{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ringbox .mid b{font-size:36px;line-height:1}.ringbox .mid span{font-size:11px;color:var(--mu);margin-top:4px;letter-spacing:.1em;text-transform:uppercase}
+.legend{width:100%;display:grid;gap:10px}
+.lg{display:flex;gap:10px;align-items:flex-start;font-size:13.5px}
+.lg i{width:12px;height:12px;border-radius:4px;margin-top:4px;flex:none}
+.lg small{display:block;color:var(--mu);font-size:12.5px}
+.lg .ck{margin-left:auto;font-size:12px;font-weight:700}
+.stat3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stat3>div{background:var(--s2);border-radius:13px;padding:11px 8px;text-align:center}
+.stat3 b{display:block;font-size:20px}.stat3 span{font-size:11px;color:var(--mu)}
+.pay{display:flex;gap:12px;padding:13px 0;border-bottom:1px solid var(--line)}.pay:last-child{border:0;padding-bottom:0}
+.pay .ic{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;flex:none}
+.pay .ic.in{background:rgba(63,184,104,.14);color:var(--green)}.pay .ic.out{background:rgba(229,72,77,.12);color:#ff7a7e}
+.cat{border:1px solid var(--line);background:var(--s1);border-radius:16px;padding:14px;margin-bottom:12px}
+.cat.done{border-color:rgba(63,184,104,.45)}
+.tag{font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;background:var(--s3);color:var(--mu)}
+.tag.ok{background:rgba(63,184,104,.16);color:var(--green)}.tag.pend{background:rgba(242,162,51,.15);color:var(--orange)}
+
+/* sheet + toast */
+#sheet{position:fixed;inset:0;z-index:60;display:none}#sheet.open{display:block}
+#sheet .bd{position:absolute;inset:0;background:rgba(0,0,0,.62)}
+#sheet .pn{position:absolute;left:0;right:0;bottom:0;max-height:90vh;overflow:auto;background:var(--s1);border-radius:24px 24px 0 0;border-top:1px solid var(--line);padding:18px 16px calc(20px + var(--sb));animation:sl .25s ease-out}
+@keyframes sl{from{transform:translateY(40px);opacity:0}}
+#sheet h3{font-size:19px;margin-bottom:14px;display:flex;align-items:center}
+#sheet h3 button{margin-left:auto}
+#toast{position:fixed;left:50%;bottom:calc(100px + var(--sb));transform:translateX(-50%) translateY(20px);background:#2a2a33;border:1px solid var(--line);padding:11px 18px;border-radius:99px;font-size:14px;z-index:90;opacity:0;pointer-events:none;transition:.25s;max-width:88vw;text-align:center}
+#toast.on{opacity:1;transform:translateX(-50%)}
+hr{border:0;border-top:1px solid var(--line);margin:14px 0}
+.note{font-size:12.5px;color:var(--mu);line-height:1.5}
+.qprev{white-space:pre-wrap;font-size:13px;background:var(--s2);border-radius:12px;padding:12px;color:#cfcac0;max-height:260px;overflow:auto}
+</style>
+</head>
+<body>
+
+<div id="splash" aria-label="Gaurav Kumar Photography">
+  <svg class="iris" viewBox="-100 -100 200 200" aria-hidden="true">
+    <defs>
+      <linearGradient id="gg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f0cf85"/><stop offset="1" stop-color="#9c7326"/></linearGradient>
+      <radialGradient id="lens" cx=".4" cy=".35" r=".8"><stop offset="0" stop-color="#4b6a9b"/><stop offset=".45" stop-color="#1a2438"/><stop offset="1" stop-color="#0a0b10"/></radialGradient>
+      <clipPath id="cp"><circle r="88"/></clipPath>
+    </defs>
+    <circle r="92" class="ring"/>
+    <circle r="86" class="ring2"/>
+    <g clip-path="url(#cp)">
+      <circle class="core" r="70" fill="url(#lens)"/>
+      <circle class="core" r="46" fill="none" stroke="#2c3b58" stroke-width="1.2"/>
+      <circle class="core" r="26" fill="none" stroke="#2c3b58" stroke-width="1"/>
+      <ellipse class="hl" cx="-18" cy="-24" rx="14" ry="7" fill="#fff" opacity=".0" transform="rotate(-35 -18 -24)"/>
+      <g class="blades" id="blades"></g>
+    </g>
+  </svg>
+  <div class="s-name serif"><span>Gaurav</span><span>Kumar</span></div>
+  <div class="s-sub">PHOTOGRAPHY</div>
+  <div class="s-tag">Every frame, a forever.</div>
+  <div class="s-skip">TAP TO SKIP</div>
+  <div class="flash"></div>
+</div>
+
+<div id="shell" hidden>
+  <header id="top">
+    <button class="ib" id="menuBtn" data-act="openMenu" aria-label="Menu"><svg class="i"><use href="#i-menu"/></svg></button>
+    <button class="ib" id="backBtn" data-act="back" aria-label="Back" hidden><svg class="i"><use href="#i-back"/></svg></button>
+    <h2 id="title">Dashboard</h2>
+  </header>
+  <main id="view"></main>
+  <button id="fab" data-act="newInq" aria-label="Register inquiry"><svg class="i"><use href="#i-plus"/></svg></button>
+</div>
+
+<div id="scrim" data-act="closeMenu"></div>
+<aside id="drawer"></aside>
+<div id="sheet"></div>
+<div id="toast"></div>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></symbol>
+  <symbol id="i-dash" viewBox="0 0 24 24"><rect x="3" y="3" width="7.5" height="7.5" rx="1.5"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.5"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.5"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.5"/></symbol>
+  <symbol id="i-inbox" viewBox="0 0 24 24"><path d="M3 13h5l1 3h6l1-3h5M5.5 5h13L21 13v6H3v-6z"/></symbol>
+  <symbol id="i-order" viewBox="0 0 24 24"><path d="M9 4h6v3H9zM8 5.5H6a1 1 0 00-1 1V20a1 1 0 001 1h12a1 1 0 001-1V6.5a1 1 0 00-1-1h-2M8.5 12h7M8.5 16h4.5"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 20V11M10 20V4M16 20v-7M22 20H2"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/></symbol>
+  <symbol id="i-wa" viewBox="0 0 24 24"><path d="M20 12a8 8 0 01-11.8 7L4 20l1.1-4A8 8 0 1120 12z"/><path d="M9.2 8.8c0 3 2.8 5.8 5.8 5.8l.9-1.6-1.9-1-.9.9c-1-.4-1.9-1.3-2.3-2.3l.9-.9-1-1.9z"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-pdf" viewBox="0 0 24 24"><path d="M7 3h7l5 5v13H7zM14 3v5h5M10 14h6M10 17.5h4"/></symbol>
+  <symbol id="i-edit" viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16zM13 7l4 4"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M5 7h14M10 7V4h4v3M7 7l1 13h8l1-13"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><path d="M4 6h16v14H4zM4 10.5h16M8 3v4M16 3v4"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v4a1 1 0 01-1 1A16 16 0 014 5a1 1 0 011-1z"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s7-6 7-11a7 7 0 10-14 0c0 5 7 11 7 11z"/><circle cx="12" cy="10" r="2.6"/></symbol>
+  <symbol id="i-cam" viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.6"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 17V11a6 6 0 1112 0v6l1.5 2h-15zM10 21h4"/></symbol>
+  <symbol id="i-in" viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H9M17 7v8"/></symbol>
+  <symbol id="i-out" viewBox="0 0 24 24"><path d="M17 7L7 17M7 17h8M7 17V9"/></symbol>
+</svg>
+
+<script src="jspdf.umd.min.js"></script>
+<script>
+(function(){
+'use strict';
+/* =====================  helpers  ===================== */
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid=()=>Math.random().toString(36).slice(2,9)+Date.now().toString(36).slice(-4);
+const pad=n=>String(n).padStart(4,'0');
+const num=v=>{const n=parseFloat(String(v).replace(/,/g,''));return isFinite(n)?n:0};
+const inr=n=>'₹'+Math.round(n||0).toLocaleString('en-IN');
+const rs=n=>'Rs. '+Math.round(n||0).toLocaleString('en-IN');
+const pd=s=>{if(!s)return null;const [y,m,d]=String(s).split('-').map(Number);return new Date(y,m-1,d)};
+const sod=d=>{const x=new Date(d);x.setHours(0,0,0,0);return x};
+const dayDiff=(a,b)=>Math.round((sod(b)-sod(a))/864e5);
+const fmtD=d=>{const x=typeof d==='string'?pd(d):new Date(d);return x?x.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}):'—'};
+const fmtDT=ts=>new Date(ts).toLocaleString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit',hour12:true});
+const ic=(n,c='')=>`<svg class="i ${c}"><use href="#i-${n}"/></svg>`;
+const Cap=window.Capacitor, native=!!(Cap&&Cap.isNativePlatform&&Cap.isNativePlatform());
+
+/* =====================  data  ===================== */
+const KEY='gkp_db_v1';
+const EVENT_TYPES=['Wedding','Pre-Wedding','Engagement','Birthday','Baby Shower','Corporate Event','Maternity','Portrait / Studio','Product Shoot','Others'];
+const SERVICES=['Photography','Videography','Drone','Album','Pre-wedding shoot','Reels / Teaser'];
+const SVC_DESC={'Photography':'Photography coverage (candid + traditional)','Videography':'Cinematic videography','Drone':'Drone coverage','Album':'Premium photo album','Pre-wedding shoot':'Pre-wedding shoot','Reels / Teaser':'Reels / teaser video'};
+const OUT_CATS=[{k:'album',n:'Album'},{k:'video',n:'Videography charges'},{k:'photo',n:'Photography charges'},{k:'photographer',n:'Photographer charges'},{k:'travel',n:'Traveling'},{k:'other',n:'Other expenses'}];
+const PAY_MODES=['UPI','Cash','Bank transfer','Cheque','Card','Other'];
+const REJECT_REASONS=['Budget too high','Date not available','Went with another studio','Not responding','Event cancelled','Others'];
+const DEF_TERMS=[
+'1. 50% of the total amount is payable as advance to confirm the booking; the balance is due on the event day / before album delivery.',
+'2. The date is reserved only after the advance payment is received.',
+'3. The advance amount is non-refundable in case of cancellation by the client.',
+'4. Travel, stay and food for the team (for events outside the event city) will be arranged by the client.',
+'5. Edited photos will be delivered within 30 days of the event; the album within 45–60 days after final selection.',
+'6. Raw / unedited files are not provided.',
+'7. Additional hours beyond the agreed coverage will be charged extra.',
+'8. This quotation is valid for the number of days mentioned below.'].join('\n');
+const defaults=()=>({v:1,settings:{studio:'Gaurav Kumar Photography',owner:'Gaurav Kumar',phone:'',pay:'',terms:DEF_TERMS,palette:'A',valid:15},n:{inq:0,ord:0,rct:0},inquiries:[],orders:[]});
+let db=load();
+function load(){try{const j=JSON.parse(localStorage.getItem(KEY)||'null');if(j&&Array.isArray(j.inquiries)){const d=defaults();return Object.assign(d,j,{settings:Object.assign(d.settings,j.settings||{}),n:Object.assign(d.n,j.n||{})})}}catch(e){}return defaults()}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(db))}catch(e){toast('Could not save – storage blocked')}}
+const getInq=id=>db.inquiries.find(x=>x.id===id);
+const getOrd=id=>db.orders.find(x=>x.id===id);
+const ordOfInq=id=>db.orders.find(x=>x.inqId===id);
+
+function applyPalette(){const r=document.documentElement.style;const A=db.settings.palette!=='B';
+  r.setProperty('--c-new',A?'#3fb868':'#f2a233');r.setProperty('--c-fin',A?'#f2a233':'#3fb868');r.setProperty('--c-rej','#e5484d')}
+const STATUS={new:{n:'New',cls:'st-new'},fin:{n:'Finalized',cls:'st-fin'},rej:{n:'Rejected',cls:'st-rej'}};
+
+/* ---- calculations ---- */
+const quoteTotal=q=>q?Math.max(0,q.items.reduce((s,i)=>s+num(i.amt),0)-num(q.disc)):0;
+function calc(o){
+  const fin=Math.max(0,num(o.base)+num(o.extra)-num(o.disc));
+  const rec=o.incoming.reduce((s,p)=>s+p.amount,0);
+  const rem=fin-rec;
+  const cats=OUT_CATS.map(c=>{const e=o.outgoing[c.k];const sum=e.entries.reduce((s,x)=>s+x.amount,0);return{k:c.k,n:c.n,sum,done:e.entries.length>0||e.nil,nil:e.nil,entries:e.entries}});
+  const spent=cats.reduce((s,c)=>s+c.sum,0);
+  const doneN=cats.filter(c=>c.done).length;
+  const pDet=o.saved&&fin>0?1:0, pInc=fin>0?Math.min(rec/fin,1):0, pOut=doneN/OUT_CATS.length;
+  const complete=pDet===1&&rec>=fin&&fin>0&&doneN===OUT_CATS.length;
+  let pct=Math.round((pDet+pInc+pOut)/3*100); if(!complete&&pct>=100)pct=99; if(complete)pct=100;
+  return{fin,rec,rem,cats,spent,doneN,pDet,pInc,pOut,complete,pct,net:rec-spent,exp:fin-spent};
+}
+function aging(o,c,i){
+  const now=Date.now(), age=dayDiff(o.createdAt,now);
+  const last=o.incoming.length?o.incoming[o.incoming.length-1].ts:o.createdAt;
+  const since=dayDiff(last,now);
+  const ev=i&&i.eventDate?dayDiff(now,pd(i.eventDate)):null;
+  const overdue=(c.rem>0&&ev!==null&&ev<0)?-ev:0;
+  return{age,since,ev,overdue};
+}
+function slabLabel(o,idx){
+  const fin=Math.max(0,num(o.base)+num(o.extra)-num(o.disc));
+  let run=0;for(let k=0;k<=idx;k++)run+=o.incoming[k].amount;
+  const completes=fin>0&&run>=fin;
+  if(idx===0)return completes?'Full payment':'Advance';
+  return completes?'Final payment':'Installment '+idx;
+}
+
+/* =====================  UI infra  ===================== */
+const ui={inqQ:'',inqSort:'new',inqF:'all',ordQ:'',ordSort:'new',ordF:'all',tab:'details',pay:'in',period:'all',qd:null,qdId:null};
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('on'),2400)}
+function openSheet(title,html){$('#sheet').innerHTML=`<div class="bd" data-act="closeSheet"></div><div class="pn"><h3>${esc(title)}<button class="ib" data-act="closeSheet" aria-label="Close">${ic('x')}</button></h3>${html}</div>`;$('#sheet').classList.add('open')}
+function closeSheet(){$('#sheet').classList.remove('open');$('#sheet').innerHTML=''}
+function openMenu(){buildDrawer();document.body.classList.add('dopen')}
+function closeMenu(){document.body.classList.remove('dopen')}
+const route=()=>{const h=(location.hash||'#/dashboard').slice(2).split('/');return{name:h[0]||'dashboard',id:h[1]}};
+const nav=p=>{location.hash='#/'+p};
+const replaceTo=p=>{history.replaceState(null,'','#/'+p);closeSheet();closeMenu();render();window.scrollTo(0,0)};
+window.addEventListener('hashchange',()=>{closeSheet();closeMenu();render();window.scrollTo(0,0)});
+function setTitle(t){$('#title').textContent=t}
+function openUrl(u){if(native)location.href=u;else window.open(u,'_blank')}
+function waNum(c){let d=String(c||'').replace(/\D/g,'');if(d.length===10)d='91'+d;else if(d.length===11&&d[0]==='0')d='91'+d.slice(1);return d}
+function wa(contact,text){if(waNum(contact).length<10){toast('Invalid WhatsApp number');return}openUrl('https://wa.me/'+waNum(contact)+'?text='+encodeURIComponent(text))}
+
+function buildDrawer(){
+  const r=route().name; const cNew=db.inquiries.filter(i=>i.status==='new').length;
+  const L=(k,i,t,c)=>`<button class="dl ${r===k?'on':''}" data-go="${k}">${ic(i)}<span>${t}</span>${c!=null?`<span class="cnt">${c}</span>`:''}</button>`;
+  $('#drawer').innerHTML=`<div class="brand"><div class="mk">${ic('cam')}</div><h3 class="serif">${esc(db.settings.studio)}</h3><div class="muted sm">Inquiries · Orders · Payments</div></div>
+  ${L('dashboard','dash','Dashboard')}${L('inquiries','inbox','Inquiries',db.inquiries.length)}${L('orders','order','Orders',db.orders.length)}${L('summary','chart','Summary')}
+  <div class="sp"></div>${L('settings','gear','Settings')}`;
+}
+
+/* =====================  views  ===================== */
+function render(){
+  const r=route(), v=$('#view');
+  const sub=['inquiry','order','new','edit','quote'].includes(r.name);
+  $('#menuBtn').hidden=sub;$('#backBtn').hidden=!sub;
+  $('#fab').hidden=!['dashboard','inquiries','orders'].includes(r.name);
+  const map={dashboard:vDash,inquiries:vInqs,orders:vOrds,summary:vSummary,settings:vSettings,inquiry:vInq,order:vOrder,new:vForm,edit:vForm,quote:vQuote};
+  (map[r.name]||vDash)(v,r);
+}
+
+/* ---------- dashboard ---------- */
+function stats(){
+  const I=db.inquiries,O=db.orders.map(o=>({o,c:calc(o),i:getInq(o.inqId)}));
+  return{cNew:I.filter(x=>x.status==='new').length,cFin:I.filter(x=>x.status==='fin').length,cRej:I.filter(x=>x.status==='rej').length,O,
+    booked:O.reduce((s,x)=>s+x.c.fin,0),rec:O.reduce((s,x)=>s+x.c.rec,0),pend:O.reduce((s,x)=>s+Math.max(0,x.c.rem),0),spent:O.reduce((s,x)=>s+x.c.spent,0)};
+}
+function monthsChart(n=6){
+  const now=new Date(),ms=[];for(let k=n-1;k>=0;k--){const d=new Date(now.getFullYear(),now.getMonth()-k,1);ms.push({y:d.getFullYear(),m:d.getMonth(),l:d.toLocaleString('en-IN',{month:'short'}),in:0,out:0})}
+  const put=(ts,f,a)=>{const d=new Date(ts);const m=ms.find(x=>x.y===d.getFullYear()&&x.m===d.getMonth());if(m)m[f]+=a};
+  db.orders.forEach(o=>{o.incoming.forEach(p=>put(p.ts,'in',p.amount));OUT_CATS.forEach(c=>o.outgoing[c.k].entries.forEach(e=>put(e.ts,'out',e.amount)))});
+  const mx=Math.max(1,...ms.map(m=>Math.max(m.in,m.out)));const W=320,H=130,bw=15,gap=(W-n*bw*2)/(n+1);
+  let s=`<svg viewBox="0 0 ${W} ${H+22}" width="100%" role="img" aria-label="Monthly received vs spent">`;
+  ms.forEach((m,k)=>{const x=gap+k*(bw*2+gap);const h1=m.in/mx*H,h2=m.out/mx*H;
+    s+=`<rect x="${x}" y="${H-h1}" width="${bw}" height="${Math.max(h1,1)}" rx="3" fill="#3fb868"/><rect x="${x+bw+2}" y="${H-h2}" width="${bw}" height="${Math.max(h2,1)}" rx="3" fill="#e5484d" opacity=".85"/><text x="${x+bw}" y="${H+15}" fill="#9a968e" font-size="10" text-anchor="middle">${m.l}</text>`});
+  return s+'</svg>';
+}
+function vDash(v){
+  setTitle('Dashboard');
+  const s=stats(),now=Date.now();
+  const rem=s.O.filter(x=>x.c.rem>0&&x.c.fin>0).sort((a,b)=>aging(b.o,b.c,b.i).since-aging(a.o,a.c,a.i).since).slice(0,5);
+  const up=db.inquiries.filter(i=>i.status!=='rej'&&i.eventDate&&dayDiff(now,pd(i.eventDate))>=0&&dayDiff(now,pd(i.eventDate))<=30).sort((a,b)=>a.eventDate.localeCompare(b.eventDate)).slice(0,5);
+  const recent=[...db.inquiries].sort((a,b)=>b.createdAt-a.createdAt).slice(0,4);
+  const hr=new Date().getHours(),greet=hr<12?'Good morning':hr<17?'Good afternoon':'Good evening';
+  const conv=(s.cFin+s.cRej)?Math.round(s.cFin/(s.cFin+s.cRej)*100):0;
+  v.innerHTML=`
+  <div class="hero"><div class="muted">${greet}</div><h1 class="serif">${esc(db.settings.studio.replace(/ Photography$/i,''))}<br><span>Photography</span></h1><div class="muted sm">${new Date().toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}</div></div>
+  <div class="grid2">
+    <div class="kpi st-new" data-act="goInq" data-f="new"><div class="l">New inquiries</div><div class="n">${s.cNew}</div></div>
+    <div class="kpi st-fin" data-act="goInq" data-f="fin"><div class="l">Finalized</div><div class="n">${s.cFin}</div></div>
+    <div class="kpi st-rej" data-act="goInq" data-f="rej"><div class="l">Rejected</div><div class="n">${s.cRej}</div></div>
+    <div class="kpi" data-go="orders" style="--c:var(--gold)"><div class="l">Orders · done</div><div class="n">${s.O.length} <span class="muted sm">· ${s.O.filter(x=>x.c.complete).length}</span></div></div>
+  </div>
+  <div class="card"><h3>Business summary <span class="r xs muted">Conversion ${conv}%</span></h3>
+    <div class="fin-row">
+      <div><div class="l">Total booked</div><div class="v">${inr(s.booked)}</div></div>
+      <div><div class="l">Received</div><div class="v pos">${inr(s.rec)}</div></div>
+      <div><div class="l">Pending</div><div class="v warn">${inr(s.pend)}</div></div>
+      <div><div class="l">Expenses</div><div class="v neg">${inr(s.spent)}</div></div>
+    </div><hr><div class="row"><span class="muted">Net so far (received − expenses)</span><span class="sp"></span><span class="b ${s.rec-s.spent<0?'neg':'pos'}">${inr(s.rec-s.spent)}</span></div></div>
+  <div class="card"><h3>Last 6 months <span class="r xs"><span class="pos">■</span> received &nbsp;<span class="neg">■</span> spent</span></h3>${monthsChart()}</div>
+  <div class="card"><h3>${ic('bell','s')} Payment reminders <span class="r"><a class="gold sm" data-go="orders">All orders</a></span></h3>
+    ${rem.length?rem.map(x=>{const a=aging(x.o,x.c,x.i);return `<div class="pay" style="align-items:center"><div class="sp" data-go="order/${x.o.id}" style="cursor:pointer"><div class="b">${esc(x.i.name)}</div><div class="sm muted">${x.o.no} · pending <b class="warn">${inr(x.c.rem)}</b> · ${a.since}d since last activity${a.overdue?` · <span class="neg">overdue ${a.overdue}d</span>`:''}</div></div><button class="btn wa sm" data-act="remind" data-id="${x.o.id}">${ic('wa','s')}Remind</button></div>`}).join(''):'<div class="muted sm">No pending payments. 🎉</div>'}</div>
+  <div class="card"><h3>${ic('cal','s')} Upcoming events · next 30 days</h3>
+    ${up.length?up.map(i=>`<div class="pay" style="cursor:pointer;align-items:center" data-go="${i.status==='fin'&&ordOfInq(i.id)?'order/'+ordOfInq(i.id).id:'inquiry/'+i.id}"><div class="sp"><div class="b">${esc(i.name)}</div><div class="sm muted">${esc(evType(i))} · ${esc(i.location)}</div></div><div class="sm b gold">${fmtD(i.eventDate)}</div></div>`).join(''):'<div class="muted sm">Nothing in the next 30 days.</div>'}</div>
+  <div class="card"><h3>Recent inquiries <span class="r"><a class="gold sm" data-go="inquiries">View all</a></span></h3>
+    ${recent.length?'<div style="margin:0 -2px">'+recent.map(inqItem).join('')+'</div>':'<div class="empty" style="padding:18px">No inquiries yet.<br>Tap the <b class="gold">+</b> button to register your first one.</div>'}</div>`;
+}
+const evType=i=>i.eventType==='Others'?(i.eventOther||'Other'):i.eventType;
+
+/* ---------- inquiries ---------- */
+function inqItem(i){
+  const q=quoteTotal(i.quote);
+  return `<div class="it ${STATUS[i.status].cls}" data-go="inquiry/${i.id}"><div class="sp"><div class="t">${esc(i.name)}</div><div class="s">${esc(evType(i))} · ${fmtD(i.eventDate)}</div><div class="s">${esc(i.location)} · ${i.no}</div></div><div style="text-align:right"><span class="pill ${STATUS[i.status].cls}">${STATUS[i.status].n}</span>${q?`<div class="amt sm" style="margin-top:7px">${inr(q)}</div>`:''}</div></div>`;
+}
+function vInqs(v){
+  setTitle('Inquiries');
+  const cnt=k=>db.inquiries.filter(i=>k==='all'||i.status===k).length;
+  const ch=(k,l,c)=>`<div class="chip ${ui.inqF===k?'on':''} ${c||''}" data-act="inqF" data-f="${k}">${c?'<i class="dot"></i>':''}${l}<span class="n">${cnt(k)}</span></div>`;
+  v.innerHTML=`<div class="search">${ic('search','s')}<input id="q" placeholder="Search name, phone, place, event…" value="${esc(ui.inqQ)}" autocomplete="off"><select id="sort" aria-label="Sort">
+   ${[['new','Newest first'],['old','Oldest first'],['event','Event date ↑'],['name','Name A–Z'],['amt','Quote amount ↓']].map(x=>`<option value="${x[0]}" ${ui.inqSort===x[0]?'selected':''}>${x[1]}</option>`).join('')}</select></div>
+  <div class="chips">${ch('all','All')}${ch('new','New','st-new')}${ch('fin','Finalized','st-fin')}${ch('rej','Rejected','st-rej')}</div><div id="list"></div>`;
+  $('#q').oninput=e=>{ui.inqQ=e.target.value;inqList()};$('#sort').onchange=e=>{ui.inqSort=e.target.value;inqList()};inqList();
+}
+function inqList(){
+  const q=ui.inqQ.trim().toLowerCase();
+  let a=db.inquiries.filter(i=>(ui.inqF==='all'||i.status===ui.inqF)&&(!q||[i.name,i.contact,i.location,evType(i),i.no,i.notes].join(' ').toLowerCase().includes(q)));
+  const S={new:(x,y)=>y.createdAt-x.createdAt,old:(x,y)=>x.createdAt-y.createdAt,event:(x,y)=>(x.eventDate||'9').localeCompare(y.eventDate||'9'),name:(x,y)=>x.name.localeCompare(y.name),amt:(x,y)=>quoteTotal(y.quote)-quoteTotal(x.quote)};
+  a.sort(S[ui.inqSort]);
+  $('#list').innerHTML=a.length?a.map(inqItem).join(''):`<div class="empty">${ic('inbox')}<div>${db.inquiries.length?'No inquiries match.':'No inquiries yet — tap + to add one.'}</div></div>`;
+}
+
+/* ---------- new / edit inquiry ---------- */
+function vForm(v,r){
+  const edit=r.name==='edit',i=edit?getInq(r.id):{services:[]};
+  if(edit&&!i){nav('inquiries');return}
+  setTitle(edit?'Edit inquiry':'New inquiry');
+  const sv=i.services||[];
+  v.innerHTML=`<div class="card"><h3>Client</h3>
+   <div class="fld"><label>Client name <b>*</b></label><input id="f_name" value="${esc(i.name||'')}" placeholder="e.g. Rohit Sharma" autocomplete="off"></div>
+   <div class="fld"><label>Contact (WhatsApp) <b>*</b></label><div class="pre"><span>+91</span><input id="f_contact" type="tel" inputmode="tel" value="${esc(i.contact||'')}" placeholder="98765 43210"></div></div>
+   <div class="fld"><label>Email (optional)</label><input id="f_email" type="email" value="${esc(i.email||'')}"></div></div>
+  <div class="card"><h3>Event</h3>
+   <div class="fld"><label>Event type <b>*</b></label><select id="f_type"><option value="">Select…</option>${EVENT_TYPES.map(t=>`<option ${i.eventType===t?'selected':''}>${t}</option>`).join('')}</select></div>
+   <div class="fld" id="f_oth_w" ${i.eventType==='Others'?'':'hidden'}><label>Please specify event <b>*</b></label><input id="f_other" value="${esc(i.eventOther||'')}" placeholder="Type the event name"></div>
+   <div class="two"><div class="fld"><label>Event date <b>*</b></label><input id="f_date" type="date" value="${esc(i.eventDate||'')}"></div><div class="fld"><label>Time (optional)</label><input id="f_time" type="time" value="${esc(i.eventTime||'')}"></div></div>
+   <div class="fld"><label>Location / venue <b>*</b></label><input id="f_loc" value="${esc(i.location||'')}" placeholder="City / venue name"></div></div>
+  <div class="card"><h3>Basic details</h3>
+   <div class="fld"><label>Services required</label><div class="svc" id="f_svc">${SERVICES.map(s=>`<div class="chip ${sv.includes(s)?'on':''}" data-act="svc">${s}</div>`).join('')}</div></div>
+   <div class="two"><div class="fld"><label>Expected guests</label><input id="f_guests" type="number" inputmode="numeric" value="${esc(i.guests||'')}"></div><div class="fld"><label>Client budget (₹)</label><input id="f_budget" type="number" inputmode="decimal" value="${esc(i.budget||'')}"></div></div>
+   <div class="fld"><label>Notes</label><textarea id="f_notes" placeholder="Any special requirements, references, ceremonies…">${esc(i.notes||'')}</textarea></div></div>
+  <div class="btns"><button class="btn p f" data-act="saveInq" data-id="${edit?i.id:''}">${ic('check')}${edit?'Save changes':'Register inquiry'}</button></div>`;
+  $('#f_type').onchange=e=>{$('#f_oth_w').hidden=e.target.value!=='Others';if(e.target.value==='Others')$('#f_other').focus()};
+}
+function saveInq(id){
+  const g=k=>($('#f_'+k).value||'').trim();
+  const d={name:g('name'),contact:g('contact'),email:g('email'),eventType:g('type'),eventOther:g('other'),eventDate:g('date'),eventTime:g('time'),location:g('loc'),guests:g('guests'),budget:g('budget'),notes:g('notes'),services:$$('#f_svc .chip.on').map(x=>x.textContent)};
+  if(!d.name)return toast('Enter the client name');
+  if(waNum(d.contact).length<10)return toast('Enter a valid contact number');
+  if(!d.eventType)return toast('Select the event type');
+  if(d.eventType==='Others'&&!d.eventOther)return toast('Type the event name');
+  if(!d.eventDate)return toast('Select the event date');
+  if(!d.location)return toast('Enter the location');
+  if(d.eventType!=='Others')d.eventOther='';
+  if(id){Object.assign(getInq(id),d);save();toast('Inquiry updated');history.back()}
+  else{db.n.inq++;const i=Object.assign({id:uid(),no:'INQ-'+pad(db.n.inq),createdAt:Date.now(),status:'new',quote:null},d);db.inquiries.push(i);save();toast('Inquiry registered');replaceTo('inquiry/'+i.id)}
+}
+
+/* ---------- inquiry detail ---------- */
+function detailRows(i){
+  return [['Client',esc(i.name)],['Contact','+'+waNum(i.contact)],i.email?['Email',esc(i.email)]:null,['Event',esc(evType(i))],['Date',fmtD(i.eventDate)+(i.eventTime?' · '+i.eventTime:'')],['Location',esc(i.location)],
+   i.services&&i.services.length?['Services',esc(i.services.join(', '))]:null,i.guests?['Guests',esc(i.guests)]:null,i.budget?['Client budget',inr(num(i.budget))]:null,i.notes?['Notes',esc(i.notes)]:null,['Registered',fmtDT(i.createdAt)]]
+   .filter(Boolean).map(r=>`<div class="kv"><span>${r[0]}</span><span>${r[1]}</span></div>`).join('');
+}
+function vInq(v,r){
+  const i=getInq(r.id);if(!i){nav('inquiries');return}
+  setTitle(i.no);const q=i.quote,o=ordOfInq(i.id),st=STATUS[i.status];
+  v.innerHTML=`<div class="row" style="margin-bottom:14px"><span class="pill ${st.cls}">${st.n}</span><span class="sp"></span><button class="btn sm" data-go="edit/${i.id}">${ic('edit','s')}Edit</button></div>
+  <div class="card"><h3>Inquiry details</h3>${detailRows(i)}
+   <div class="row wrap" style="margin-top:12px"><button class="btn sm wa" data-act="chat" data-id="${i.id}">${ic('wa','s')}Chat</button><a class="btn sm" href="tel:+${waNum(i.contact)}">${ic('phone','s')}Call</a></div></div>
+  ${i.status==='rej'?`<div class="card st-rej" style="border-color:var(--c)"><h3 style="color:var(--c)">Rejected</h3><div>${esc(i.rejectReason||'—')}</div></div>`:''}
+  <div class="card"><h3>Quotation ${q?`<span class="r b gold">${inr(quoteTotal(q))}</span>`:''}</h3>
+   ${q?`<div class="qprev">${esc(quoteText(i))}</div><div class="note" style="margin-top:8px">${q.sentAt?'Shared on WhatsApp '+fmtDT(q.sentAt):'Not shared yet'}</div>`:'<div class="muted sm">No quotation created yet.</div>'}
+   ${i.status!=='rej'?`<div class="btns ${q?'c2':''}" style="margin-top:12px"><button class="btn ${q?'':'p'}" data-go="quote/${i.id}">${ic('edit','s')}${q?'Edit quote':'Create quote'}</button>${q?`<button class="btn wa" data-act="shareQuote" data-id="${i.id}">${ic('wa','s')}Send on WhatsApp</button>`:''}</div>`:''}</div>
+  ${i.status==='new'?`<div class="card"><h3>Deal decision</h3><div class="btns c2"><button class="btn g" data-act="confirmDeal" data-id="${i.id}">${ic('check','s')}Confirm deal</button><button class="btn d" data-act="rejectDeal" data-id="${i.id}">${ic('x','s')}Reject</button></div><div class="note" style="margin-top:10px">Confirming turns this inquiry into an order where you add final amount, discounts, payments and expenses.</div></div>`:''}
+  ${i.status==='fin'&&o?`<button class="btn p f" data-go="order/${o.id}">${ic('order','s')}Open order ${o.no}</button>`:''}
+  ${i.status==='rej'?`<button class="btn f" data-act="reopen" data-id="${i.id}">Reopen as new inquiry</button>`:''}
+  ${i.status!=='fin'?`<button class="btn d f" style="margin-top:12px" data-act="delInq" data-id="${i.id}">${ic('trash','s')}Delete inquiry</button>`:''}`;
+}
+
+/* ---------- quote ---------- */
+function defaultQuote(i){
+  const names=(i.services&&i.services.length?i.services:['Photography','Videography','Album']).map(s=>SVC_DESC[s]||s);
+  return{items:names.map(d=>({id:uid(),desc:d,amt:''})),disc:'',loc:i.location,date:i.eventDate,valid:db.settings.valid,terms:db.settings.terms,note:'',sentAt:null};
+}
+function vQuote(v,r){
+  const i=getInq(r.id);if(!i){nav('inquiries');return}
+  setTitle('Quotation · '+i.no);
+  if(ui.qdId!==i.id||!ui.qd){ui.qd=JSON.parse(JSON.stringify(i.quote||defaultQuote(i)));ui.qdId=i.id}
+  const q=ui.qd;
+  v.innerHTML=`<div class="card"><h3>To</h3><div class="b">${esc(i.name)}</div><div class="sm muted">${esc(evType(i))} · +${waNum(i.contact)}</div></div>
+  <div class="card"><h3>Event details</h3><div class="two"><div class="fld"><label>Event date</label><input type="date" data-q="date" value="${esc(q.date||'')}"></div><div class="fld"><label>Valid for (days)</label><input type="number" inputmode="numeric" data-q="valid" value="${esc(q.valid)}"></div></div>
+   <div class="fld" style="margin:0"><label>Location / venue</label><input data-q="loc" value="${esc(q.loc||'')}"></div></div>
+  <div class="card"><h3>Items &amp; amounts</h3>
+   ${q.items.map((x,k)=>`<div class="qi"><input data-q="items.${k}.desc" value="${esc(x.desc)}" placeholder="Description"><input type="number" inputmode="decimal" data-q="items.${k}.amt" value="${esc(x.amt)}" placeholder="₹ Amount"><button data-act="qDel" data-k="${k}" aria-label="Remove">${ic('x','s')}</button></div>`).join('')}
+   <button class="btn sm" data-act="qAdd">${ic('plus','s')}Add item</button>
+   <div class="qi" style="margin-top:14px;grid-template-columns:1fr 112px 38px"><div class="muted" style="padding:12px 0">Discount</div><input type="number" inputmode="decimal" data-q="disc" value="${esc(q.disc)}" placeholder="₹ 0"><span></span></div>
+   <div class="tot"><span>Total</span><span id="qtot">${inr(quoteTotal(q))}</span></div></div>
+  <div class="card"><h3>Terms &amp; conditions <span class="r"><a class="gold sm" data-act="qResetTerms">Reset</a></span></h3><div class="fld" style="margin:0"><textarea data-q="terms" style="min-height:230px">${esc(q.terms)}</textarea></div></div>
+  <div class="card"><h3>Personal note (optional)</h3><div class="fld" style="margin:0"><textarea data-q="note" placeholder="e.g. Special offer for early booking…">${esc(q.note||'')}</textarea></div></div>
+  <div class="btns c2"><button class="btn" data-act="qSave" data-id="${i.id}">Save quote</button><button class="btn wa" data-act="qSave" data-share="1" data-id="${i.id}">${ic('wa','s')}Save &amp; send</button></div>`;
+}
+function quoteText(i,q=i.quote){
+  const S=db.settings,lines=[];
+  lines.push(`*${S.studio}*`,`Quotation ${i.no.replace('INQ','QT')}`,'',`Dear ${i.name},`,`Thank you for your inquiry for *${evType(i)}*${q.date?' on '+fmtD(q.date):''}${q.loc?' at '+q.loc:''}.`,'','*Quotation*');
+  q.items.filter(x=>x.desc||num(x.amt)).forEach((x,k)=>lines.push(`${k+1}. ${x.desc} — ${inr(num(x.amt))}`));
+  if(num(q.disc))lines.push(`Discount — -${inr(num(q.disc))}`);
+  lines.push(`*Total: ${inr(quoteTotal(q))}*`);
+  if(q.note)lines.push('','_'+q.note+'_');
+  lines.push('','*Terms & Conditions*',q.terms,'',`This quotation is valid for ${q.valid||S.valid} days.`);
+  if(S.pay)lines.push('',S.pay);
+  lines.push('',`Regards,`,S.owner,S.studio+(S.phone?'\n'+S.phone:''));
+  return lines.join('\n');
+}
+
+/* ---------- orders list ---------- */
+function miniRing(c){
+  const R=19,C=2*Math.PI*R,col=c.complete?'#3fb868':'#d6aa55';
+  return `<div class="mini"><svg viewBox="0 0 46 46" width="46" height="46"><circle cx="23" cy="23" r="${R}" fill="none" stroke="#2d2d37" stroke-width="4.5"/><circle cx="23" cy="23" r="${R}" fill="none" stroke="${col}" stroke-width="4.5" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C*(1-c.pct/100)}" transform="rotate(-90 23 23)"/></svg><span style="color:${col}">${c.complete?'✓':c.pct+'%'}</span></div>`;
+}
+function ordItem(o){
+  const c=calc(o),i=getInq(o.inqId)||{},a=aging(o,c,i);
+  return `<div class="it" style="--c:${c.complete?'var(--green)':'var(--gold)'}" data-go="order/${o.id}">${miniRing(c)}<div class="sp"><div class="t">${esc(i.name)}</div><div class="s">${o.no} · ${esc(evType(i))} · ${fmtD(i.eventDate)}</div><div class="s">Day ${a.age} of order${a.overdue?` · <span class="neg">overdue ${a.overdue}d</span>`:''}</div></div><div class="amt">${c.fin?inr(c.fin):'<span class="warn sm">Set amount</span>'}<div class="sm ${c.rem>0?'warn':'pos'}" style="font-weight:500">${!c.fin?'':c.rem>0?inr(c.rem)+' due':c.rem<0?'Excess '+inr(-c.rem):'Paid ✓'}</div></div></div>`;
+}
+function vOrds(v){
+  setTitle('Orders');
+  const cnt=k=>db.orders.filter(o=>ordMatch(o,k)).length;
+  const ch=(k,l)=>`<div class="chip ${ui.ordF===k?'on':''}" data-act="ordF" data-f="${k}">${l}<span class="n">${cnt(k)}</span></div>`;
+  v.innerHTML=`<div class="search">${ic('search','s')}<input id="q" placeholder="Search name, order no, event…" value="${esc(ui.ordQ)}" autocomplete="off"><select id="sort" aria-label="Sort">
+   ${[['new','Newest first'],['old','Oldest first'],['event','Event date ↑'],['pend','Pending amount ↓'],['prog','Least complete'],['name','Name A–Z']].map(x=>`<option value="${x[0]}" ${ui.ordSort===x[0]?'selected':''}>${x[1]}</option>`).join('')}</select></div>
+  <div class="chips">${ch('all','All')}${ch('prog','In progress')}${ch('pay','Payment pending')}${ch('done','Completed')}</div><div id="list"></div>`;
+  $('#q').oninput=e=>{ui.ordQ=e.target.value;ordList()};$('#sort').onchange=e=>{ui.ordSort=e.target.value;ordList()};ordList();
+}
+function ordMatch(o,k){const c=calc(o);return k==='all'||(k==='prog'&&!c.complete)||(k==='pay'&&c.rem>0)||(k==='done'&&c.complete)}
+function ordList(){
+  const q=ui.ordQ.trim().toLowerCase();
+  let a=db.orders.filter(o=>{const i=getInq(o.inqId)||{};return ordMatch(o,ui.ordF)&&(!q||[i.name,i.contact,i.location,evType(i),o.no].join(' ').toLowerCase().includes(q))});
+  const S={new:(x,y)=>y.createdAt-x.createdAt,old:(x,y)=>x.createdAt-y.createdAt,event:(x,y)=>((getInq(x.inqId)||{}).eventDate||'9').localeCompare((getInq(y.inqId)||{}).eventDate||'9'),pend:(x,y)=>calc(y).rem-calc(x).rem,prog:(x,y)=>calc(x).pct-calc(y).pct,name:(x,y)=>((getInq(x.inqId)||{}).name||'').localeCompare((getInq(y.inqId)||{}).name||'')};
+  a.sort(S[ui.ordSort]);
+  $('#list').innerHTML=a.length?a.map(ordItem).join(''):`<div class="empty">${ic('order')}<div>${db.orders.length?'No orders match.':'No orders yet. Confirm a deal on an inquiry to create one.'}</div></div>`;
+}
+
+/* ---------- order detail ---------- */
+function bigRing(c){
+  const rings=[{r:98,p:c.pInc,col:'#d6aa55',n:'Incoming'},{r:78,p:c.pOut,col:'#5aa3f0',n:'Outgoing'},{r:58,p:c.pDet,col:'#a78bfa',n:'Details'}];
+  let s=`<svg viewBox="0 0 224 224" width="224" height="224" role="img" aria-label="Order completion ${c.pct}%">`;
+  rings.forEach(g=>{const C=2*Math.PI*g.r,done=g.p>=1,col=done?'#3fb868':g.col;
+    s+=`<circle cx="112" cy="112" r="${g.r}" fill="none" stroke="#272730" stroke-width="14"/><circle cx="112" cy="112" r="${g.r}" fill="none" stroke="${col}" stroke-width="14" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${C*(1-Math.min(g.p,1))}" transform="rotate(-90 112 112)" style="transition:stroke-dashoffset .8s"/>`});
+  return s+'</svg>';
+}
+function vOrder(v,r){
+  const o=getOrd(r.id);if(!o){nav('orders');return}
+  const i=getInq(o.inqId)||{},c=calc(o);setTitle(o.no);
+  const T=(k,l)=>`<button class="${ui.tab===k?'on':''}" data-act="tab" data-t="${k}">${l}</button>`;
+  v.innerHTML=`<div class="ohead">${miniRing(c)}<div class="sp"><div class="b" style="font-size:18px">${esc(i.name)}</div><div class="sm muted">${esc(evType(i))} · ${fmtD(i.eventDate)}</div></div>${c.complete?'<span class="pill" style="--c:var(--green)">Completed</span>':'<span class="pill" style="--c:var(--orange)">In progress</span>'}</div>
+  <div class="tabs">${T('details','Details')}${T('payments','Payments')}${T('summary','Summary')}</div><div id="otab"></div>`;
+  ({details:tabDetails,payments:tabPayments,summary:tabSummary}[ui.tab]||tabDetails)($('#otab'),o,i,c);
+}
+function tabDetails(el,o,i,c){
+  const lg=(col,t,sub,ok)=>`<div class="lg"><i style="background:${ok?'#3fb868':col}"></i><div><b>${t}</b><small>${sub}</small></div><span class="ck ${ok?'pos':'warn'}">${ok?'DONE':'PENDING'}</span></div>`;
+  const pendCats=c.cats.filter(x=>!x.done).map(x=>x.n);
+  el.innerHTML=`<div class="card"><h3>Order completion</h3><div class="ringwrap"><div class="ringbox">${bigRing(c)}<div class="mid"><b style="color:${c.complete?'var(--green)':'var(--tx)'}">${c.pct}%</b><span>${c.complete?'Completed':'Complete'}</span></div></div>
+   <div class="legend">
+    ${lg('#d6aa55','Incoming payments',c.fin?(c.rem>0?`${inr(c.rem)} still to receive`:'Fully received'):'Set the final amount first',c.fin>0&&c.rem<=0)}
+    ${lg('#5aa3f0','Outgoing expenses',pendCats.length?`Not filled: ${pendCats.join(', ')}`:'All 6 categories filled',pendCats.length===0)}
+    ${lg('#a78bfa','Details & final amount',c.pDet?'Final amount saved':'Save the final amount below',c.pDet===1)}</div></div></div>
+  <div class="card"><h3>Basic details <span class="r"><a class="gold sm" data-go="edit/${i.id}">Edit</a></span></h3>${detailRows(i)}</div>
+  <div class="card"><h3>Final amount</h3>
+   <div class="fld"><label>Agreed / quoted amount (₹)</label><input type="number" inputmode="decimal" id="a_base" data-live="amt" value="${esc(o.base||'')}"></div>
+   <div class="two"><div class="fld"><label>Additional charges (₹)</label><input type="number" inputmode="decimal" id="a_extra" data-live="amt" value="${esc(o.extra||'')}"></div><div class="fld"><label>Discount (₹)</label><input type="number" inputmode="decimal" id="a_disc" data-live="amt" value="${esc(o.disc||'')}"></div></div>
+   <div class="tot" style="margin:0 0 14px"><span>Final amount</span><span id="a_fin" class="gold">${inr(c.fin)}</span></div>
+   <div class="fld"><label>Order notes</label><textarea id="a_notes" placeholder="Delivery dates, album details, special terms…">${esc(o.notes||'')}</textarea></div>
+   <button class="btn p f" data-act="saveAmt" data-id="${o.id}">${ic('check','s')}${o.saved?'Update final amount':'Save final amount'}</button></div>
+  <button class="btn d f" data-act="delOrder" data-id="${o.id}">${ic('trash','s')}Delete order</button>`;
+}
+function tabPayments(el,o,i,c){
+  el.innerHTML=`<div class="seg"><button class="${ui.pay==='in'?'on in':''}" data-act="payTab" data-t="in">${ic('in','s')} Incoming</button><button class="${ui.pay==='out'?'on out':''}" data-act="payTab" data-t="out">${ic('out','s')} Outgoing</button></div><div id="ptab"></div>`;
+  (ui.pay==='in'?payIn:payOut)($('#ptab'),o,i,c);
+}
+function payIn(el,o,i,c){
+  const a=aging(o,c,i);
+  el.innerHTML=`<div class="card"><h3>Incoming payments</h3>
+   <div class="fin-row" style="margin-bottom:14px"><div><div class="l">Final amount</div><div class="v">${inr(c.fin)}</div></div><div><div class="l">Received</div><div class="v pos">${inr(c.rec)}</div></div></div>
+   <div class="bar ${c.rem<=0&&c.fin>0?'ok':''}"><i style="width:${Math.round(c.pInc*100)}%"></i></div>
+   <div class="row" style="margin-top:10px"><span class="muted">${c.rem<0?'Excess received':'Remaining'}</span><span class="sp"></span><span class="big ${c.rem>0?'warn':'pos'}">${inr(Math.abs(c.rem))}</span></div>
+   <div class="btns ${c.rem>0?'c2':''}" style="margin-top:14px"><button class="btn p" data-act="addPay" data-id="${o.id}">${ic('plus','s')}Add payment</button>${c.rem>0?`<button class="btn wa" data-act="remind" data-id="${o.id}">${ic('wa','s')}Reminder</button>`:''}</div></div>
+  <div class="card"><h3>Aging</h3><div class="stat3"><div><b>${a.age}d</b><span>Order age</span></div><div><b class="${c.rem>0&&a.since>14?'neg':''}">${c.rem>0?a.since+'d':'—'}</b><span>${c.rem>0?'Since last activity':'No dues'}</span></div><div><b class="${a.ev!==null&&a.ev<0?(c.rem>0?'neg':''):''}">${a.ev===null?'—':a.ev>=0?a.ev+'d':-a.ev+'d'}</b><span>${a.ev===null?'':a.ev>=0?'To event':'Since event'}</span></div></div>
+   ${a.overdue?`<div class="note neg" style="margin-top:10px">⚠ ${inr(c.rem)} is overdue — event was ${a.overdue} day${a.overdue>1?'s':''} ago.</div>`:''}</div>
+  <div class="card"><h3>Payment history <span class="r muted">${o.incoming.length}</span></h3>
+   ${o.incoming.length?o.incoming.map((p,k)=>{const run=o.incoming.slice(0,k+1).reduce((s,x)=>s+x.amount,0);return `<div class="pay"><div class="ic in">${ic('in','s')}</div><div class="sp"><div class="b">${slabLabel(o,k)} · <span class="pos">${inr(p.amount)}</span></div><div class="sm muted">${fmtDT(p.ts)} · ${esc(p.mode)} · ${dayDiff(p.ts,Date.now())}d ago</div>${p.note?`<div class="sm" style="margin-top:2px">${esc(p.note)}</div>`:''}<div class="xs muted">${p.rct} · balance after: ${inr(Math.max(0,c.fin-run))}</div><div class="row" style="margin-top:8px"><button class="btn wa sm" data-act="rcpt" data-id="${o.id}" data-p="${p.id}">${ic('wa','s')}Receipt</button><button class="btn sm" data-act="rcptPdf" data-id="${o.id}" data-p="${p.id}">${ic('pdf','s')}PDF</button><button class="btn sm d" data-act="delPay" data-id="${o.id}" data-p="${p.id}" aria-label="Delete">${ic('trash','s')}</button></div></div></div>`}).join(''):'<div class="muted sm">No payments received yet.</div>'}</div>`;
+}
+function payOut(el,o,i,c){
+  el.innerHTML=`<div class="card"><h3>Outgoing summary</h3><div class="fin-row"><div><div class="l">Total spent</div><div class="v neg">${inr(c.spent)}</div></div><div><div class="l">Expected profit</div><div class="v ${c.exp<0?'neg':'pos'}">${inr(c.exp)}</div></div><div><div class="l">Net (received − spent)</div><div class="v ${c.net<0?'neg':''}">${inr(c.net)}</div></div><div><div class="l">Categories filled</div><div class="v">${c.doneN}/6</div></div></div></div>
+  ${c.cats.map(x=>`<div class="cat ${x.done?'done':''}"><div class="row"><div class="b sp">${x.n}</div><span class="tag ${x.done?'ok':'pend'}">${x.done?(x.nil&&!x.entries.length?'NIL':'FILLED'):'PENDING'}</span></div>
+   <div class="big" style="font-size:22px;margin:6px 0 4px">${inr(x.sum)}</div>
+   ${x.entries.map(e=>`<div class="pay" style="padding:9px 0"><div class="sp"><div class="sm"><b>${inr(e.amount)}</b>${e.note?' · '+esc(e.note):''}</div><div class="xs muted">${fmtDT(e.ts)}</div></div><button class="ib" style="width:36px;height:36px;color:var(--mu)" data-act="delExp" data-id="${o.id}" data-k="${x.k}" data-e="${e.id}" aria-label="Delete">${ic('trash','s')}</button></div>`).join('')}
+   <div class="row wrap" style="margin-top:8px"><button class="btn sm" data-act="addExp" data-id="${o.id}" data-k="${x.k}">${ic('plus','s')}Add expense</button>${!x.entries.length?`<button class="btn sm" data-act="nilCat" data-id="${o.id}" data-k="${x.k}">${x.nil?'Undo nil':'No expense (nil)'}</button>`:''}</div></div>`).join('')}`;
+}
+function tabSummary(el,o,i,c){
+  const a=aging(o,c,i);
+  el.innerHTML=`<div class="card"><h3>Order summary <span class="r pill" style="--c:${c.complete?'var(--green)':'var(--orange)'}">${c.pct}%</span></h3>
+   <div class="kv"><span>Order no.</span><span>${o.no}</span></div><div class="kv"><span>Created</span><span>${fmtD(o.createdAt)} (${a.age}d ago)</span></div>${detailRows(i)}</div>
+  <div class="card"><h3>Financials</h3>
+   <div class="kv"><span>Agreed amount</span><span>${inr(num(o.base))}</span></div>${num(o.extra)?`<div class="kv"><span>Additional charges</span><span>+ ${inr(num(o.extra))}</span></div>`:''}${num(o.disc)?`<div class="kv"><span>Discount</span><span>− ${inr(num(o.disc))}</span></div>`:''}
+   <div class="kv"><span><b>Final amount</b></span><span class="gold"><b>${inr(c.fin)}</b></span></div><div class="kv"><span>Received</span><span class="pos">${inr(c.rec)}</span></div><div class="kv"><span>${c.rem<0?'Excess':'Balance'}</span><span class="${c.rem>0?'warn':''}">${inr(Math.abs(c.rem))}</span></div>
+   <div class="kv"><span>Total expenses</span><span class="neg">${inr(c.spent)}</span></div><div class="kv"><span><b>Profit (final − expenses)</b></span><span class="${c.exp<0?'neg':'pos'}"><b>${inr(c.exp)}</b></span></div></div>
+  <div class="card"><h3>Incoming payments</h3>${o.incoming.length?o.incoming.map((p,k)=>`<div class="kv"><span>${slabLabel(o,k)}<br><span class="xs muted">${fmtDT(p.ts)} · ${esc(p.mode)}</span></span><span>${inr(p.amount)}</span></div>`).join(''):'<div class="muted sm">None</div>'}</div>
+  <div class="card"><h3>Outgoing expenses</h3>${c.cats.map(x=>`<div class="kv"><span>${x.n}${x.entries.length?`<br><span class="xs muted">${x.entries.map(e=>inr(e.amount)+(e.note?' ('+esc(e.note)+')':'')).join(', ')}</span>`:''}</span><span>${x.done?inr(x.sum):'<span class="warn">pending</span>'}</span></div>`).join('')}</div>
+  ${o.notes?`<div class="card"><h3>Notes</h3><div style="white-space:pre-wrap">${esc(o.notes)}</div></div>`:''}
+  <div class="btns"><button class="btn p f" data-act="pdf" data-id="${o.id}">${ic('pdf')}Download PDF summary</button></div>`;
+}
+
+/* ---------- business summary ---------- */
+function vSummary(v){
+  setTitle('Summary');
+  const P=[['m','This month'],['3','3 months'],['y','This year'],['all','All time']];
+  const now=new Date();const from={m:new Date(now.getFullYear(),now.getMonth(),1),'3':new Date(now.getFullYear(),now.getMonth()-2,1),y:new Date(now.getFullYear(),0,1),all:new Date(0)}[ui.period].getTime();
+  const I=db.inquiries.filter(i=>i.createdAt>=from),O=db.orders.filter(o=>o.createdAt>=from).map(o=>({o,c:calc(o),i:getInq(o.inqId)||{}}));
+  let rec=0,spent=0;const catSum={};OUT_CATS.forEach(c=>catSum[c.k]=0);
+  db.orders.forEach(o=>{o.incoming.forEach(p=>{if(p.ts>=from)rec+=p.amount});OUT_CATS.forEach(c=>o.outgoing[c.k].entries.forEach(e=>{if(e.ts>=from){spent+=e.amount;catSum[c.k]+=e.amount}}))});
+  const booked=O.reduce((s,x)=>s+x.c.fin,0),pend=O.reduce((s,x)=>s+Math.max(0,x.c.rem),0);
+  const nf=I.filter(i=>i.status==='fin').length,nr=I.filter(i=>i.status==='rej').length,nn=I.filter(i=>i.status==='new').length;
+  const bt={};O.forEach(x=>{const t=evType(x.i)||'—';bt[t]=bt[t]||{n:0,a:0};bt[t].n++;bt[t].a+=x.c.fin});
+  const mx=Math.max(1,...Object.values(catSum));
+  v.innerHTML=`<div class="chips">${P.map(p=>`<div class="chip ${ui.period===p[0]?'on':''}" data-act="period" data-p="${p[0]}">${p[1]}</div>`).join('')}</div>
+  <div class="card"><h3>Inquiries</h3><div class="stat3"><div style="--c:var(--c-new)"><b style="color:var(--c-new)">${nn}</b><span>New</span></div><div><b style="color:var(--c-fin)">${nf}</b><span>Finalized</span></div><div><b style="color:var(--c-rej)">${nr}</b><span>Rejected</span></div></div>
+   <div class="note" style="margin-top:10px">Total ${I.length} · conversion ${(nf+nr)?Math.round(nf/(nf+nr)*100):0}% of decided inquiries</div></div>
+  <div class="card"><h3>Money</h3><div class="fin-row"><div><div class="l">Booked (orders)</div><div class="v">${inr(booked)}</div></div><div><div class="l">Received</div><div class="v pos">${inr(rec)}</div></div><div><div class="l">Pending</div><div class="v warn">${inr(pend)}</div></div><div><div class="l">Spent</div><div class="v neg">${inr(spent)}</div></div></div><hr><div class="row"><span class="muted">Net cash (received − spent)</span><span class="sp"></span><b class="${rec-spent<0?'neg':'pos'}">${inr(rec-spent)}</b></div></div>
+  <div class="card"><h3>By event type</h3>${Object.keys(bt).length?Object.entries(bt).sort((a,b)=>b[1].a-a[1].a).map(([t,x])=>`<div class="kv"><span>${esc(t)} <span class="xs">· ${x.n} order${x.n>1?'s':''}</span></span><span>${inr(x.a)}</span></div>`).join(''):'<div class="muted sm">No orders in this period.</div>'}</div>
+  <div class="card"><h3>Spend by category</h3>${OUT_CATS.map(c=>`<div style="margin-bottom:12px"><div class="row sm"><span class="sp">${c.n}</span><b>${inr(catSum[c.k])}</b></div><div class="bar" style="margin-top:5px"><i style="width:${catSum[c.k]/mx*100}%;background:var(--blue)"></i></div></div>`).join('')}</div>
+  <div class="card"><h3>Last 6 months</h3>${monthsChart()}</div>`;
+}
+
+/* ---------- settings ---------- */
+function vSettings(v){
+  setTitle('Settings');const S=db.settings;
+  v.innerHTML=`<div class="card"><h3>Studio</h3>
+   <div class="fld"><label>Studio name</label><input id="s_studio" value="${esc(S.studio)}"></div>
+   <div class="fld"><label>Your name (message sign-off)</label><input id="s_owner" value="${esc(S.owner)}"></div>
+   <div class="fld"><label>Studio contact number</label><input id="s_phone" type="tel" value="${esc(S.phone)}"></div>
+   <div class="fld"><label>Payment details line (UPI / bank) – added to quotes &amp; reminders</label><input id="s_pay" value="${esc(S.pay)}" placeholder="e.g. Pay via UPI: gaurav@upi"></div>
+   <div class="fld"><label>Default quote validity (days)</label><input id="s_valid" type="number" value="${esc(S.valid)}"></div>
+   <div class="fld"><label>Default terms &amp; conditions (pre-filled in every new quote)</label><textarea id="s_terms" style="min-height:200px">${esc(S.terms)}</textarea></div>
+   <button class="btn p f" data-act="saveSet">Save settings</button></div>
+  <div class="card"><h3>Inquiry colours</h3><div class="seg" style="margin:0"><button class="${S.palette!=='B'?'on in':''}" data-act="pal" data-p="A">New green · Finalized orange</button><button class="${S.palette==='B'?'on in':''}" data-act="pal" data-p="B">New orange · Finalized green</button></div><div class="note" style="margin-top:8px">Rejected is always red.</div></div>
+  <div class="card"><h3>Backup</h3><div class="note" style="margin-bottom:12px">All data is stored on this device. Export a backup regularly (and before clearing app data).</div><div class="btns c2"><button class="btn" data-act="export">${ic('down','s')}Export</button><label class="btn" style="cursor:pointer">Import<input type="file" id="imp" accept="application/json" hidden></label></div>
+   <button class="btn d f" style="margin-top:12px" data-act="wipe">${ic('trash','s')}Erase all data</button></div>
+  <div class="note" style="text-align:center;padding:6px 0 16px">${esc(S.studio)} · v1.0</div>`;
+  $('#imp').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const j=JSON.parse(r.result);if(!Array.isArray(j.inquiries)||!Array.isArray(j.orders))throw 0;db=Object.assign(defaults(),j);save();applyPalette();toast('Backup restored');render()}catch(x){toast('Invalid backup file')}};r.readAsText(f)};
+}
+
+/* =====================  PDFs & files  ===================== */
+async function deliver(doc,name){
+  if(native&&Cap.Plugins&&Cap.Plugins.Filesystem&&Cap.Plugins.Share){
+    try{const b64=doc.output('datauristring').split(',')[1];const r=await Cap.Plugins.Filesystem.writeFile({path:name,data:b64,directory:'CACHE'});await Cap.Plugins.Share.share({title:name,url:r.uri,dialogTitle:'Save or share PDF'});return}catch(e){if(String(e&&e.message).toLowerCase().includes('cancel'))return}
+  }
+  doc.save(name);
+}
+async function deliverText(text,name){
+  if(native&&Cap.Plugins&&Cap.Plugins.Filesystem&&Cap.Plugins.Share){
+    try{const b64=btoa(unescape(encodeURIComponent(text)));const r=await Cap.Plugins.Filesystem.writeFile({path:name,data:b64,directory:'CACHE'});await Cap.Plugins.Share.share({title:name,url:r.uri});return}catch(e){}
+  }
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:'application/json'}));a.download=name;a.click();
+}
+function pdfOrder(o){
+  const J=window.jspdf.jsPDF,doc=new J({unit:'mm',format:'a4'}),i=getInq(o.inqId)||{},c=calc(o),a=aging(o,c,i),S=db.settings;
+  const W=210,M=14;let y=0;
+  const ens=h=>{if(y+h>284){doc.addPage();y=18}};
+  doc.setFillColor(13,13,16);doc.rect(0,0,W,36,'F');
+  doc.setTextColor(214,170,85);doc.setFont('times','bold');doc.setFontSize(21);doc.text(S.studio,M,17);
+  doc.setFont('helvetica','normal');doc.setFontSize(9.5);doc.setTextColor(200,196,186);doc.text('ORDER SUMMARY  |  '+o.no+(S.phone?'  |  '+S.phone:''),M,25);
+  doc.text('Generated '+fmtDT(Date.now()),W-M,25,{align:'right'});
+  doc.setFillColor(...(c.complete?[63,184,104]:[242,162,51]));doc.roundedRect(W-M-34,9,34,8,2,2,'F');doc.setTextColor(13,13,16);doc.setFont('helvetica','bold');doc.setFontSize(9);doc.text(c.complete?'COMPLETED 100%':'IN PROGRESS '+c.pct+'%',W-M-17,14.3,{align:'center'});
+  y=46;
+  const sec=t=>{ens(16);doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(150,110,30);doc.text(t.toUpperCase(),M,y);doc.setDrawColor(214,170,85);doc.setLineWidth(.4);doc.line(M,y+1.8,W-M,y+1.8);y+=8;doc.setTextColor(30,30,34)};
+  const kv=(k,v,col)=>{ens(7);doc.setFont('helvetica','normal');doc.setFontSize(10);doc.setTextColor(110,108,100);doc.text(k,M,y);doc.setTextColor(...(col||[25,25,28]));doc.setFont('helvetica','bold');const lines=doc.splitTextToSize(String(v),110);doc.text(lines,W-M,y,{align:'right'});y+=6.2*lines.length};
+  const row=(l,r,b)=>{ens(7);doc.setFont('helvetica',b?'bold':'normal');doc.setFontSize(10);doc.setTextColor(25,25,28);doc.text(l,M+2,y);doc.text(r,W-M-2,y,{align:'right'});y+=6.2};
+  sec('Client & event');
+  kv('Client',i.name||'');kv('Contact','+'+waNum(i.contact));kv('Event',evType(i)+' — '+fmtD(i.eventDate)+(i.eventTime?' '+i.eventTime:''));kv('Location',i.location||'');
+  if(i.services&&i.services.length)kv('Services',i.services.join(', '));kv('Order created',fmtD(o.createdAt)+'  ('+a.age+' days ago)');y+=3;
+  sec('Financial summary');
+  row('Agreed amount',rs(num(o.base)));if(num(o.extra))row('Additional charges','+ '+rs(num(o.extra)));if(num(o.disc))row('Discount','- '+rs(num(o.disc)));
+  doc.setDrawColor(200,200,200);doc.setLineWidth(.2);doc.line(M,y-3.5,W-M,y-3.5);
+  row('Final amount',rs(c.fin),true);row('Total received',rs(c.rec));row(c.rem<0?'Excess received':'Balance due',rs(Math.abs(c.rem)),true);row('Total expenses',rs(c.spent));row('Profit (final amount - expenses)',rs(c.exp),true);y+=3;
+  sec('Incoming payments');
+  if(o.incoming.length){doc.setFont('helvetica','bold');doc.setFontSize(9);doc.setTextColor(110,108,100);doc.text('SLAB',M+2,y);doc.text('DATE & TIME',M+44,y);doc.text('MODE',M+108,y);doc.text('AMOUNT',W-M-2,y,{align:'right'});y+=5.5;
+    o.incoming.forEach((p,k)=>{ens(8);doc.setFont('helvetica','normal');doc.setFontSize(10);doc.setTextColor(25,25,28);doc.text(slabLabel(o,k),M+2,y);doc.text(fmtDT(p.ts),M+44,y);doc.text(p.mode,M+108,y);doc.text(rs(p.amount),W-M-2,y,{align:'right'});y+=5.4;if(p.note){doc.setFontSize(8.5);doc.setTextColor(120,118,110);doc.text('Note: '+p.note,M+2,y);y+=4.6}});}
+  else{doc.setFontSize(10);doc.setTextColor(120,118,110);doc.text('No payments received yet.',M+2,y);y+=6}
+  y+=3;sec('Outgoing expenses');
+  c.cats.forEach(x=>{row(x.n+(x.done?'':'  (pending)'),rs(x.sum));x.entries.forEach(e=>{ens(6);doc.setFont('helvetica','normal');doc.setFontSize(8.5);doc.setTextColor(120,118,110);doc.text('   '+fmtDT(e.ts)+(e.note?' - '+e.note:'')+'  :  '+rs(e.amount),M+4,y);y+=4.6})});
+  y+=3;sec('Aging & completion');
+  kv('Order age',a.age+' days');if(c.rem>0)kv('Days since last payment activity',a.since+' days');if(a.ev!==null)kv(a.ev>=0?'Days to event':'Days since event',Math.abs(a.ev)+' days');
+  kv('Completion',c.pct+'%  (details '+(c.pDet?'done':'pending')+', incoming '+Math.round(c.pInc*100)+'%, outgoing '+c.doneN+'/6)');
+  if(o.notes){y+=3;sec('Notes');doc.setFont('helvetica','normal');doc.setFontSize(10);doc.setTextColor(40,40,44);const l=doc.splitTextToSize(o.notes,W-2*M);ens(l.length*5);doc.text(l,M,y);y+=l.length*5}
+  const pc=doc.getNumberOfPages();for(let p=1;p<=pc;p++){doc.setPage(p);doc.setFontSize(8);doc.setTextColor(150,150,150);doc.text(S.studio+'  |  '+o.no+'  |  Page '+p+' of '+pc,W/2,292,{align:'center'})}
+  return doc;
+}
+function pdfReceipt(o,p){
+  const J=window.jspdf.jsPDF,doc=new J({unit:'mm',format:'a5'}),i=getInq(o.inqId)||{},c=calc(o),S=db.settings,W=148,M=12;
+  const idx=o.incoming.findIndex(x=>x.id===p.id),run=o.incoming.slice(0,idx+1).reduce((s,x)=>s+x.amount,0);
+  doc.setFillColor(13,13,16);doc.rect(0,0,W,28,'F');doc.setTextColor(214,170,85);doc.setFont('times','bold');doc.setFontSize(17);doc.text(S.studio,M,13);
+  doc.setFont('helvetica','normal');doc.setFontSize(9);doc.setTextColor(200,196,186);doc.text('PAYMENT RECEIPT'+(S.phone?'  |  '+S.phone:''),M,21);
+  let y=40;const kv=(k,v,b)=>{doc.setFont('helvetica','normal');doc.setFontSize(10);doc.setTextColor(110,108,100);doc.text(k,M,y);doc.setFont('helvetica',b?'bold':'normal');doc.setTextColor(25,25,28);doc.text(String(v),W-M,y,{align:'right'});y+=7};
+  kv('Receipt no.',p.rct);kv('Date & time',fmtDT(p.ts));kv('Received from',i.name||'');kv('Order',o.no+' - '+evType(i)+' - '+fmtD(i.eventDate));kv('Payment for',slabLabel(o,idx));kv('Mode',p.mode);
+  y+=2;doc.setDrawColor(214,170,85);doc.line(M,y,W-M,y);y+=9;doc.setFont('helvetica','bold');doc.setFontSize(12);doc.setTextColor(25,25,28);doc.text('Amount received',M,y);doc.setFontSize(17);doc.setTextColor(30,140,70);doc.text(rs(p.amount),W-M,y,{align:'right'});y+=12;
+  kv('Order total',rs(c.fin));kv('Total received so far',rs(run));kv('Balance',rs(Math.max(0,c.fin-run)),true);
+  if(p.note){y+=2;doc.setFontSize(9);doc.setTextColor(110,108,100);doc.text('Note: '+p.note,M,y);y+=6}
+  doc.setFontSize(9);doc.setTextColor(120,118,110);doc.text('Thank you for choosing '+S.studio+'.',W/2,y+12,{align:'center'});
+  return doc;
+}
+const safe=s=>String(s).replace(/[^\w\-]+/g,'_');
+
+/* =====================  messages  ===================== */
+function receiptText(o,p){
+  const i=getInq(o.inqId)||{},c=calc(o),S=db.settings,idx=o.incoming.findIndex(x=>x.id===p.id),run=o.incoming.slice(0,idx+1).reduce((s,x)=>s+x.amount,0);
+  return [`*Payment Receipt*`,S.studio,'',`Receipt No: ${p.rct}`,`Date: ${fmtDT(p.ts)}`,'',`Received with thanks from *${i.name}*`,`Amount: *${inr(p.amount)}* (${slabLabel(o,idx)})`,`Mode: ${p.mode}`,`Order: ${o.no} · ${evType(i)} · ${fmtD(i.eventDate)}`,p.note?`Note: ${p.note}`:null,'',
+   `Order total: ${inr(c.fin)}`,`Received so far: ${inr(run)}`,`Balance: *${inr(Math.max(0,c.fin-run))}*`,'','Thank you! 🙏',S.owner].filter(x=>x!==null).join('\n');
+}
+function reminderText(o){
+  const i=getInq(o.inqId)||{},c=calc(o),S=db.settings;
+  return [`Dear ${i.name},`,'',`This is a gentle reminder regarding your *${evType(i)}* booking (${o.no}) with ${S.studio}.`,'',`Total: ${inr(c.fin)}`,`Received: ${inr(c.rec)}`,`*Pending: ${inr(c.rem)}*`,'','Kindly clear the balance at your earliest convenience.',S.pay||null,'','Thank you 🙏',S.owner].filter(x=>x!==null).join('\n');
+}
+
+/* =====================  actions  ===================== */
+const A={
+  openMenu,closeMenu,closeSheet,
+  back(){if(history.length>1)history.back();else nav('dashboard')},
+  newInq(){nav('new')},
+  goInq(t){ui.inqF=t.dataset.f;nav('inquiries')},
+  inqF(t){ui.inqF=t.dataset.f;$$('.chips .chip').forEach(c=>c.classList.toggle('on',c===t));inqList()},
+  ordF(t){ui.ordF=t.dataset.f;$$('.chips .chip').forEach(c=>c.classList.toggle('on',c===t));ordList()},
+  svc(t){t.classList.toggle('on')},
+  saveInq(t){saveInq(t.dataset.id)},
+  chat(t){const i=getInq(t.dataset.id);wa(i.contact,`Hello ${i.name}, this is ${db.settings.owner} from ${db.settings.studio}.`)},
+  /* quote */
+  qAdd(){ui.qd.items.push({id:uid(),desc:'',amt:''});render();setTimeout(()=>{const x=$$('[data-q$=".desc"]');x[x.length-1]&&x[x.length-1].focus()},30)},
+  qDel(t){ui.qd.items.splice(+t.dataset.k,1);render()},
+  qResetTerms(){ui.qd.terms=db.settings.terms;render()},
+  qSave(t){
+    const i=getInq(t.dataset.id),q=ui.qd;q.items=q.items.filter(x=>x.desc.trim()||num(x.amt));
+    if(!q.items.length||!quoteTotal(q))return toast('Add at least one item with an amount');
+    i.quote=JSON.parse(JSON.stringify(q));if(t.dataset.share){i.quote.sentAt=Date.now()}save();ui.qd=null;ui.qdId=null;
+    if(t.dataset.share){toast('Opening WhatsApp…');wa(i.contact,quoteText(i));replaceTo('inquiry/'+i.id)}else{toast('Quote saved');history.back()}
+  },
+  shareQuote(t){const i=getInq(t.dataset.id);i.quote.sentAt=Date.now();save();wa(i.contact,quoteText(i));render()},
+  /* deal */
+  confirmDeal(t){
+    const i=getInq(t.dataset.id);if(!confirm('Confirm this deal and create an order?'))return;
+    db.n.ord++;const o={id:uid(),no:'ORD-'+pad(db.n.ord),inqId:i.id,createdAt:Date.now(),base:quoteTotal(i.quote)||'',extra:'',disc:'',saved:false,notes:'',incoming:[],outgoing:Object.fromEntries(OUT_CATS.map(c=>[c.k,{entries:[],nil:false}]))};
+    i.status='fin';db.orders.push(o);save();ui.tab='details';toast('Deal confirmed — order '+o.no+' created');replaceTo('order/'+o.id);
+  },
+  rejectDeal(t){
+    openSheet('Reject inquiry',`<div class="fld"><label>Reason</label><select id="rj_r">${REJECT_REASONS.map(r=>`<option>${r}</option>`).join('')}</select></div><div class="fld" id="rj_ow" hidden><label>Specify</label><input id="rj_o"></div><button class="btn d f" data-act="doReject" data-id="${t.dataset.id}">${ic('x','s')}Reject inquiry</button>`);
+    $('#rj_r').onchange=e=>{$('#rj_ow').hidden=e.target.value!=='Others'};
+  },
+  doReject(t){const i=getInq(t.dataset.id);let r=$('#rj_r').value;if(r==='Others')r=$('#rj_o').value.trim()||'Others';i.status='rej';i.rejectReason=r;save();closeSheet();toast('Inquiry rejected');render()},
+  reopen(t){const i=getInq(t.dataset.id);i.status='new';i.rejectReason='';save();render()},
+  delInq(t){if(!confirm('Delete this inquiry permanently?'))return;db.inquiries=db.inquiries.filter(x=>x.id!==t.dataset.id);save();toast('Deleted');replaceTo('inquiries')},
+  delOrder(t){const o=getOrd(t.dataset.id);if(!confirm('Delete this order and all its payments & expenses? The inquiry goes back to "New".'))return;const i=getInq(o.inqId);if(i)i.status='new';db.orders=db.orders.filter(x=>x.id!==o.id);save();toast('Order deleted');replaceTo('orders')},
+  /* order */
+  tab(t){ui.tab=t.dataset.t;render()},
+  payTab(t){ui.pay=t.dataset.t;render()},
+  saveAmt(t){const o=getOrd(t.dataset.id);o.base=$('#a_base').value;o.extra=$('#a_extra').value;o.disc=$('#a_disc').value;o.notes=$('#a_notes').value;
+    if(calc(o).fin<=0)return toast('Enter the final amount');o.saved=true;save();toast('Final amount saved');render()},
+  addPay(t){
+    const o=getOrd(t.dataset.id),c=calc(o);if(!c.fin||!o.saved)return toast('Save the final amount in Details first');
+    openSheet('Add incoming payment',`<div class="note" style="margin-bottom:12px">Remaining: <b class="warn">${inr(Math.max(0,c.rem))}</b> · Slab: <b>${o.incoming.length===0?'Advance':'Installment '+o.incoming.length}</b></div>
+     <div class="fld"><label>Amount received (₹)</label><input id="p_amt" type="number" inputmode="decimal" value="${c.rem>0?Math.round(c.rem*100)/100:''}"></div>
+     <div class="fld"><label>Mode</label><select id="p_mode">${PAY_MODES.map(m=>`<option>${m}</option>`).join('')}</select></div>
+     <div class="fld"><label>Note</label><input id="p_note" placeholder="e.g. Advance via GPay, ref no…"></div>
+     <div class="note" style="margin-bottom:14px">${ic('cal','s')} Date &amp; time are captured automatically: <b>${fmtDT(Date.now())}</b></div>
+     <button class="btn p f" data-act="savePay" data-id="${o.id}">${ic('check','s')}Save payment</button>`);
+    setTimeout(()=>{const e=$('#p_amt');e&&e.select()},120);
+  },
+  savePay(t){
+    const o=getOrd(t.dataset.id),c=calc(o),amt=num($('#p_amt').value);
+    if(amt<=0)return toast('Enter a valid amount');if(amt>c.rem+0.001)return toast('Amount exceeds remaining '+inr(Math.max(0,c.rem)));
+    db.n.rct++;const p={id:uid(),ts:Date.now(),amount:amt,mode:$('#p_mode').value,note:$('#p_note').value.trim(),rct:'RCT-'+pad(db.n.rct)};o.incoming.push(p);save();closeSheet();render();
+    const i=getInq(o.inqId);
+    openSheet('Payment saved ✓',`<div class="note" style="margin-bottom:14px">${inr(amt)} recorded as <b>${slabLabel(o,o.incoming.length-1)}</b>. Remaining: <b class="warn">${inr(Math.max(0,calc(o).rem))}</b></div><div class="btns"><button class="btn wa f" data-act="rcpt" data-id="${o.id}" data-p="${p.id}">${ic('wa','s')}Send receipt to ${esc(i.name)} on WhatsApp</button><button class="btn f" data-act="closeSheet">Done</button></div>`);
+  },
+  rcpt(t){const o=getOrd(t.dataset.id),p=o.incoming.find(x=>x.id===t.dataset.p),i=getInq(o.inqId);wa(i.contact,receiptText(o,p))},
+  async rcptPdf(t){const o=getOrd(t.dataset.id),p=o.incoming.find(x=>x.id===t.dataset.p);await deliver(pdfReceipt(o,p),'Receipt_'+p.rct+'.pdf')},
+  delPay(t){if(!confirm('Delete this payment entry?'))return;const o=getOrd(t.dataset.id);o.incoming=o.incoming.filter(x=>x.id!==t.dataset.p);save();render()},
+  remind(t){const o=getOrd(t.dataset.id),i=getInq(o.inqId);wa(i.contact,reminderText(o))},
+  addExp(t){const k=t.dataset.k,n=OUT_CATS.find(c=>c.k===k).n;
+    openSheet('Add expense — '+n,`<div class="fld"><label>Amount (₹)</label><input id="e_amt" type="number" inputmode="decimal"></div><div class="fld"><label>Paid to / note</label><input id="e_note" placeholder="e.g. Album studio, driver, assistant…"></div><div class="note" style="margin-bottom:14px">Date &amp; time auto-captured: <b>${fmtDT(Date.now())}</b></div><button class="btn p f" data-act="saveExp" data-id="${t.dataset.id}" data-k="${k}">${ic('check','s')}Save expense</button>`);
+    setTimeout(()=>{const e=$('#e_amt');e&&e.focus()},150)},
+  saveExp(t){const amt=num($('#e_amt').value);if(amt<=0)return toast('Enter a valid amount');const o=getOrd(t.dataset.id),cat=o.outgoing[t.dataset.k];cat.entries.push({id:uid(),ts:Date.now(),amount:amt,note:$('#e_note').value.trim()});cat.nil=false;save();closeSheet();render()},
+  delExp(t){if(!confirm('Delete this expense?'))return;const o=getOrd(t.dataset.id),cat=o.outgoing[t.dataset.k];cat.entries=cat.entries.filter(e=>e.id!==t.dataset.e);save();render()},
+  nilCat(t){const cat=getOrd(t.dataset.id).outgoing[t.dataset.k];cat.nil=!cat.nil;save();render()},
+  async pdf(t){const o=getOrd(t.dataset.id),i=getInq(o.inqId)||{};toast('Preparing PDF…');await deliver(pdfOrder(o),'Order_'+o.no+'_'+safe(i.name||'')+'.pdf')},
+  /* summary + settings */
+  period(t){ui.period=t.dataset.p;render()},
+  saveSet(){const S=db.settings;S.studio=$('#s_studio').value.trim()||'Gaurav Kumar Photography';S.owner=$('#s_owner').value.trim();S.phone=$('#s_phone').value.trim();S.pay=$('#s_pay').value.trim();S.valid=num($('#s_valid').value)||15;S.terms=$('#s_terms').value;save();toast('Settings saved')},
+  pal(t){db.settings.palette=t.dataset.p;save();applyPalette();render()},
+  async export(){await deliverText(JSON.stringify(db,null,1),'GKP_backup_'+new Date().toISOString().slice(0,10)+'.json')},
+  wipe(){if(!confirm('Erase ALL inquiries, orders and payments from this device?'))return;if(!confirm('This cannot be undone. Really erase everything?'))return;db=defaults();save();applyPalette();toast('All data erased');replaceTo('dashboard')}
+};
+document.addEventListener('click',e=>{
+  const g=e.target.closest('[data-go]');if(g){e.preventDefault();const p=g.dataset.go;if(['dashboard','inquiries','orders','summary','settings'].includes(p)&&route().name===p){closeMenu();return}if(p==='orders')ui.tab='details';if(p.startsWith('order/')&&route().name!=='order'){ui.tab='details';ui.pay='in'}nav(p);return}
+  const t=e.target.closest('[data-act]');if(t&&A[t.dataset.act]){e.preventDefault();A[t.dataset.act](t,e)}
+});
+document.addEventListener('input',e=>{
+  const el=e.target;
+  if(el.dataset.q){const path=el.dataset.q.split('.');let o=ui.qd;for(let k=0;k<path.length-1;k++)o=o[path[k]];o[path[path.length-1]]=el.value;if(/amt|disc/.test(el.dataset.q)){const t=$('#qtot');if(t)t.textContent=inr(quoteTotal(ui.qd))}}
+  if(el.dataset.live==='amt'){const f=Math.max(0,num($('#a_base').value)+num($('#a_extra').value)-num($('#a_disc').value));$('#a_fin').textContent=inr(f)}
+});
+
+/* =====================  boot  ===================== */
+function boot(){
+  applyPalette();
+  const bl=$('#blades');let h='';for(let k=0;k<6;k++){const R=80,x=R*Math.cos(Math.PI/6),y=R*Math.sin(Math.PI/6);h+=`<g transform="rotate(${k*60})"><polygon class="bl" points="0,0 ${x.toFixed(1)},${(-y).toFixed(1)} ${x.toFixed(1)},${y.toFixed(1)}" style="animation-delay:${(1.1+k*.04).toFixed(2)}s"/></g>`}bl.innerHTML=h;
+  let ended=false;
+  const end=()=>{if(ended)return;ended=true;const s=$('#splash');s.classList.add('out');$('#shell').hidden=false;if(!location.hash)history.replaceState(null,'','#/dashboard');render();setTimeout(()=>s.remove(),700)};
+  $('#splash').addEventListener('click',end);setTimeout(end,3600);
+  if(!native&&'serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js').catch(()=>{});
+}
+boot();
+})();
+</script>
+</body>
+</html>
